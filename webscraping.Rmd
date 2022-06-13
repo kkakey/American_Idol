@@ -1,0 +1,415 @@
+---
+title: "AmericanIdol-webscraping-songs"
+author: "Kristen A, kkakey"
+date: "2/19/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Data from [Wikipedia.org](https://en.wikipedia.org/wiki/American_Idol)
+
+```{r}
+library(tidyverse)
+library(rvest)
+```
+
+```{r}
+page <- read_html("https://en.wikipedia.org/wiki/American_Idol_(season_1)")
+
+page <- read_html("https://en.wikipedia.org/wiki/American_Idol_(season_13)")
+```
+
+```{r}
+# extract header text
+headers <- page %>%
+  html_nodes("div.mw-parser-output") %>%
+  html_nodes("h3, h2") %>%
+  html_nodes(".mw-headline") %>%
+  html_text() %>%
+  .[grep("ollywood", x=., value=F):grep("Finale|Top 2", x=., value=F)]
+
+# extract header ids
+header_ids <- page %>%
+  html_nodes("div.mw-parser-output") %>%
+  html_nodes("h3, h2") %>%
+  html_nodes(".mw-headline") %>%
+  html_attr("id") %>%
+  .[grep("ollywood", x=., value=F):grep("Finale|Top 2|Top_2", x=., value=F)]
+
+# get paragraphs for each header (episode week)
+# (except headers with 'Group', those don't have descriptions)
+if ( length(header_ids[-grep("Group", header_ids)])==0 ) {
+  week_name <- header_ids
+} else {
+  week_name <- header_ids[-grep("Group", header_ids)]
+}
+
+week_name <- week_name %>%
+  modify(~gsub('\\([^()]*\\)', "", .x))
+
+week_desc <- map(week_name, 
+    function(x) 
+      page %>% 
+        html_nodes(xpath=paste0('//*[@id="',x,'"]/../following-sibling::p[1]')) %>%
+        html_text()
+    ) %>%
+  unlist() %>%
+  modify(~gsub('\\n|\\\\|\\[[0-9]+?\\]', "", .x))
+  
+data.frame(week_name, week_desc)
+```
+
+## Episode Ratings
+```{r}
+ratings_id <- page %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>%
+  .[grep("ating", x=., value=F)] %>%
+  html_nodes(".mw-headline") %>%
+  html_attr("id")
+
+ratings_table <- page %>%
+  html_nodes(xpath=paste0('//*[@id="',ratings_id,'"]/../following-sibling::table[1]')) %>%
+  html_nodes("table") %>%
+  html_table() %>%
+  as.data.frame()
+  
+ratings_table$Episode <- str_replace_all(ratings_table$Episode, pattern = '\\n|\\\\|\\[[0-9]+?\\]|"', "")
+```
+
+## Audition locations
+```{r}
+audition_id <- page %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>%
+  .[grep("audition", x=., value=F)] %>%
+  html_nodes(".mw-headline") %>%
+  html_attr("id")
+
+audtions_table <- page %>%
+  html_nodes(xpath=paste0('//*[@id="',audition_id,'"]/../following-sibling::table')) %>%
+  .[1] %>%
+  html_table(fill = TRUE, header = TRUE) 
+```
+
+```{r}
+s = "PleaseAddSpacesBetweenTheseWords"
+gsub("([a-z])([A-Z])", "\\1; \\2", s)
+```
+
+
+## Season Info
+```{r}
+season_info <- page %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/table[1]') %>%
+  html_table(fill = TRUE) %>%
+  as.data.frame() %>%
+  filter(American.Idol != American.Idol.1) %>%
+  rename(Col = American.Idol, Info = American.Idol.1) %>%
+  mutate(Info = gsub("([a-z])([A-Z])", "\\1; \\2", Info)) %>%
+  pivot_wider(names_from = Col, values_from = Info) %>%
+  mutate(Season = 1) #update var to season num!
+```
+
+## Season Info
+```{r}
+finalist_id <- page %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>%
+  .[grep("Finalist", x=., value=F)] %>%
+  html_nodes(".mw-headline") %>%
+  html_attr("id")
+
+finalist_desc <- page %>%
+  html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::ul')) %>%
+  .[1] %>%
+  html_nodes("li") %>% html_text()
+
+# '[A-Za-z]*\\s+[A-Za-z]*, [A-Za-z]*'  ## OG birthplace (preety good)
+
+name <- map(finalist_desc, function(x) str_split(string = x, pattern = ' \\(born |\\(')[[1]][1] %>%
+              str_trim(.))
+birthday <- map(finalist_desc, function(x) str_split(string = x, pattern = ' \\(born |\\(')[[1]][2] %>%
+  str_extract(pattern = '^(.*?)[[:digit:]]{4}', .))
+birthplace <- map(finalist_desc, function(x) str_match(string = x, 
+                                                pattern = '[A-Za-z]*\\s+[A-Za-z]*, [A-Za-z]*\\s*[A-Za-z]*') %>%
+                    str_remove(., pattern = '^in ')
+                  )
+
+hometown <- map(finalist_desc, function(x) str_match(string = x, pattern = '(?<=is from)[A-Za-z]*\\s+[A-Za-z]*, [A-Za-z]*') %>%
+                  str_trim(.))
+contestant_desc <- map(finalist_desc, function(x) 
+  paste(
+    str_split(string = x, pattern = '\\.')[[1]][2:length(str_split(string = x, pattern = '\\.')[[1]])] %>%
+      map(., function(x) ifelse(is.na(x), "", x)) %>%
+      str_replace_all(., pattern = '\\\" ', ""),
+  collapse = ".") %>%
+  str_trim(.)
+  ) %>%
+  unlist()
+
+### non-map version (would require loop, i.e. x <- finalist_desc[[6]] )
+# name <- str_split(string = x, pattern = ' \\(born |\\(')[[1]][1]
+# birthday <- str_split(string = x, pattern = ' \\(born |\\(')[[1]][2] %>%
+#   str_extract(pattern = '^(.*?)[[:digit:]]{4}', .)
+# birthplace <- str_match(string = x, pattern = '[A-Z]??[a-z]*\\s+[A-ZA-Za-z]*, [A-Z]??[a-z]*\\s+[A-Z]{1}[a-z]*') 
+# hometown <- str_match(string = x, pattern = '(?<=is from)[A-Za-z]*\\s+[A-Za-z]*, [A-Za-z]*')   
+# contestant_desc <- paste0(str_split(string = x, pattern = '\\.')[[1]][2:length(str_split(string = x, pattern = '\\.')[[1]])],
+#                           collapse = '', sep = ".")
+```
+
+--- join contestant/finalist data together
+-- clean up elimination_tabl
+
+## Finalists' Names and Gender
+```{r}
+elimination_id <- page %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>%
+  .[grep("Elimination chart", x=., value=F)] %>%
+  html_nodes(".mw-headline") %>%
+  html_attr("id")
+
+elimination_table <- page %>%
+  html_nodes(xpath=paste0('//*[@id="',elimination_id,'"]/../following-sibling::table[1]')) %>%
+  html_table(fill = TRUE) 
+
+# gender of finalists
+gender <- page %>%
+  html_nodes(xpath=paste0('//*[@id="',elimination_id,'"]/../following-sibling::table[1]')) %>%
+  html_nodes("tr") %>%
+  html_nodes("td") %>%
+  html_attr("style") %>%
+  str_match(., "pink|cyan") %>%
+  .[!is.na(.)] 
+
+## names of finalists
+indx_name <- page %>%
+  html_nodes(xpath=paste0('//*[@id="',elimination_id,'"]/../following-sibling::table[1]')) %>%
+  html_nodes("tr") %>%
+  html_nodes("td") %>%
+  html_attr("style") %>%
+  str_match(., "pink|cyan")
+
+title_names  <- page %>%
+  html_nodes(xpath=paste0('//*[@id="',elimination_id,'"]/../following-sibling::table[1]')) %>%
+  html_nodes("tr") %>%
+  html_nodes("td")
+
+finalists_names <- title_names[2:length(title_names)][indx_name %in% c("pink", "cyan")] %>%
+  html_text2()
+
+finalists <- data.frame(finalists_names, gender, contestant_desc) %>%
+  mutate(gender = ifelse(gender=="pink", "Female", "Male"))
+```
+
+
+## Songs
+```{r}
+### Create list of song tables
+songs_list_all <- map(header_ids[-grep("Semi-finals|Finals|Finalists", header_ids)], 
+    function(x) 
+      page %>% 
+        html_nodes(xpath=paste0('//*[@id="',x,'"]/../following-sibling::table[1]')) %>%
+        .[1] %>%
+        html_table(fill = TRUE) 
+    ) 
+
+
+num <- 1
+songs_list <- list()
+for (i in songs_list_all) {
+  i <- as.data.frame(i)
+  
+  # only look at tables that are actually tables
+  if (ncol(i)>1) {
+    num_song_cols <- i %>%
+      select(contains("Song")|contains("Contestant")) %>%
+      colnames() %>%
+      length()
+
+    ### if multiple song and order columns, transform to standardize
+    firstsong_colname <- i %>% select(starts_with('First.Song')) %>% colnames(.)
+    songchoice_colname <- i %>% select(contains('choice')) %>% colnames(.)
+    
+    if (num_song_cols>1 & length(firstsong_colname)!=0) {
+      
+      i <- i %>%
+        pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
+                     values_to = "Order") %>%
+        select(-name) %>%
+        group_by(Contestant) %>%
+        mutate(n = 1:n(), 
+               First.Song = ifelse(n==1,!! firstsong_colname, NA),
+               Song = coalesce(!!! syms(colnames(.)[str_detect(colnames(.), "Song")] ))
+               ) %>% 
+        select(- c(contains("."),"n")) %>%
+        ungroup()
+      
+      i <- i %>%
+        select("Order", "Contestant", "Song", "Result")
+      
+      songs_list[[num]] <- i
+    }
+    
+    if (num_song_cols>1 & length(songchoice_colname)!=0) {
+      
+        i <- i %>%
+          pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
+                       values_to = "Order") %>%
+          select(-name) %>%
+          pivot_longer(contains("choice"), names_to = "Song_type", values_to = "Song") %>%
+          group_by(Contestant) %>%
+          mutate(n = 1:n()) %>% filter(n==min(n)|n==max(n)) %>%
+          select(-n)
+        
+        i <- i %>%
+          select("Order", "Contestant", "Song", "Result", "Song_type")
+        
+        songs_list[[num]] <- i
+      
+    }
+    
+    colnames(i) <- c("Order", "Contestant", "Song", "Result")
+    songs_list[[num]] <- i
+    
+    num <- num + 1
+    firstsong_colname <- NA
+    songchoice_colname <- NA
+  }
+}
+```
+
+```{r}
+songs_list
+```
+
+
+
+
+
+
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+---------------------------------------------------------------
+---------------------------------------------------------------
+
+```{r}
+# page %>%
+#   html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]/following-sibling::p[1]') %>%
+#   # html_nodes(".mw-headline") %>%
+#   html_text()
+```
+/html/body/div[3]/div[3]/div[5]/div[1]/h3[13]
+//*[@id="mw-content-text"]/div[1]/h3[13]
+#mw-content-text > div.mw-parser-output > h3:nth-child(68)
+
+```{r}
+    page %>% 
+        html_nodes(xpath=paste0('//*[@id="Week_7:_Top_3_–_Contestant\'s_choice_&_Judges\'_choice_(August_28)"]/../following-sibling::table[1]')) %>%
+        .[1] %>%
+        html_table(fill = TRUE) 
+```
+
+
+```{r}
+ map(header_ids[-grep("Group", header_ids)], 
+    function(x) 
+      page %>% 
+        html_nodes(xpath=paste0('//*[@id="',x,'"]/../following-sibling::table[1]')) %>%
+        html_text()
+    ) %>%
+  unlist()
+```
+
+
+```{r}
+### THIS IS IT!!! -- these functions have been used above
+
+# if multiple 'song' columns
+songs_list[11] %>%
+  as.data.frame() %>%
+  pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
+               values_to = "Order") %>%
+  select(-name) %>%
+  group_by(Contestant) %>%
+  mutate(n = 1:n(), 
+         First.Song = ifelse(n==1,First.Song,NA),
+         Song = coalesce(!!! syms(colnames(.)[str_detect(colnames(.), "Song")] ))
+         ) %>% 
+  select(- c(contains("."),"n")) %>%
+  ungroup()
+
+
+# if 'song' not in colnames:
+songs_list[12] %>%
+  as.data.frame() %>%
+  pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
+               values_to = "Order") %>%
+  select(-name) %>%
+  pivot_longer(contains("choice"), names_to = "Song_type", values_to = "Song") %>%
+  group_by(Contestant) %>%
+  mutate(n = 1:n()) %>% filter(n==min(n)|n==max(n)) %>%
+  select(-n)
+
+# otherwise, keep dataframe as is!
+```
+
+
+
+
+```{r}
+# YAY!!! THIS IS IT
+# example of getting a specific table after a given id
+page %>%
+  html_nodes(xpath='//*[@id="Week_1:_Top_10_–_Motown_(July_17)"]/../following-sibling::table[1]') %>%
+  .[1] %>%
+  html_table(fill = TRUE) 
+```
+
+
+
+//*[@id="Week_8:_Finale_(September_4)"]
+```{r}
+page %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>% 
+  html_nodes(".mw-headline") %>%
+  # narrow down to headers about the week competitions
+  .[grep("ollywood", x=., value=F):grep("Finale|Top 2", x=., value=F)] %>%
+  # no descriptions after each Group lists for the Semi-Finals
+  
+  
+  # get paragraph descriptions after each header
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]/following-sibling::p[1]') %>%
+  # remove 'Color key' description
+  .[-grep("olor key", x=., value=F)] %>%
+  html_text()
+  
+  
+### want specific xpath ids to be preceded
+page %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>% 
+  html_nodes(".mw-headline") %>%
+  # narrow down to headers about the week competitions
+  .[grep("ollywood", x=., value=F):grep("Finale|Top 2", x=., value=F)] %>%
+  # no descriptions after each Group lists for the Semi-Finals
+  
+  
+  # get paragraph descriptions after each header
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]/following-sibling::p[1]') %>%
+  # remove 'Color key' description
+  .[-grep("olor key", x=., value=F)] %>%
+  html_text()
+
+
+
+
+
+```
+
+
+
+
+
+
+
