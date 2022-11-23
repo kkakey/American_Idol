@@ -22,6 +22,7 @@ page <- read_html("https://en.wikipedia.org/wiki/American_Idol_(season_1)")
 page <- read_html("https://en.wikipedia.org/wiki/American_Idol_(season_13)")
 ```
 
+## Week Numbers and Descriptions
 ```{r}
 # extract header text
 headers <- page %>%
@@ -112,7 +113,7 @@ season_info <- page %>%
   mutate(Season = 1) #update var to season num!
 ```
 
-## Season Info
+Finalists
 ```{r}
 finalist_id <- page %>%
   html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>%
@@ -156,12 +157,18 @@ contestant_desc <- map(finalist_desc, function(x)
 # hometown <- str_match(string = x, pattern = '(?<=is from)[A-Za-z]*\\s+[A-Za-z]*, [A-Za-z]*')   
 # contestant_desc <- paste0(str_split(string = x, pattern = '\\.')[[1]][2:length(str_split(string = x, pattern = '\\.')[[1]])],
 #                           collapse = '', sep = ".")
+
+as.data.frame(name, birthday)
+all_lists <- list(name, birthday)
+
+contestant_table <- data.frame(unlist(name), unlist(birthday), unlist(hometown), contestant_desc)
+colnames(contestant_table) <- c("Contestant", "Birthday", "Hometown", "Description")
 ```
 
 --- join contestant/finalist data together
 -- clean up elimination_tabl
 
-## Finalists' Names and Gender
+## Top 30 Names and Gender
 ```{r}
 elimination_id <- page %>%
   html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>%
@@ -169,9 +176,25 @@ elimination_id <- page %>%
   html_nodes(".mw-headline") %>%
   html_attr("id")
 
+## v1
+# elimination_table <- page %>%
+#   html_nodes(xpath=paste0('//*[@id="',elimination_id,'"]::table[1]')) %>%
+#   html_table(fill = TRUE) 
+
 elimination_table <- page %>%
-  html_nodes(xpath=paste0('//*[@id="',elimination_id,'"]/../following-sibling::table[1]')) %>%
-  html_table(fill = TRUE) 
+  html_nodes('#mw-content-text > div.mw-parser-output > table.wikitable.nowrap') %>%
+   html_table(fill = TRUE) 
+
+#mw-content-text > div.mw-parser-output > center > table
+
+#mw-content-text > div.mw-parser-output > center > table > tbody
+#mw-content-text > div.mw-parser-output > center > table
+#mw-content-text > div.mw-parser-output > table.wikitable.nowrap
+
+page %>%
+  html_nodes('#mw-content-text > div.mw-parser-output > table.wikitable.nowrap') %>%
+   html_table(fill = TRUE) 
+  html_text()
 
 # gender of finalists
 gender <- page %>%

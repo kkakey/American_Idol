@@ -1,0 +1,7 @@
+"order","contestant","song","song_theme","result"
+"1","Lee DeWyze","""The Boxer""","Contestant.s.choice","Winner"
+"2","Crystal Bowersox","""Me and Bobby McGee""","Contestant.s.choice","Runner-Up"
+"3","Lee DeWyze","""Everybody Hurts""","Mentor.s.choice","Winner"
+"4","Crystal Bowersox","""Black Velvet""","Mentor.s.choice","Runner-Up"
+"5","Lee DeWyze","""Beautiful Day""","Winner.s.song","Winner"
+"6","Crystal Bowersox","""Up to the Mountain (MLK Song)""","Winner.s.song","Runner-Up"
