@@ -560,6 +560,8 @@ for (season in season_nums) {
     episodes_with_competition_songs <- 
       episodes_with_competition_songs %>%
       tail(length(songs_list))
+    
+    episodes_with_competition_songs$airdate <- glue::glue('{episodes_with_competition_songs$airdate}, 2014')
   }
   
   week_desc_df <-
@@ -591,7 +593,7 @@ for (season in season_nums) {
   ######################## Save Songs ########################
   
   #### Save songs ####
-  ## where possible, I include week description as the file name
+  # where possible, I include week description as the file name
   # if (as.integer(season) == 4) {
   #   for (ind in seq_along(songs_list)) {
   #     dir_path <- glue::glue('./Songs/Season_{str_pad(season, 2, pad = "0")}')
@@ -619,12 +621,12 @@ for (season in season_nums) {
   #       dir.create(dir_path)
   #     }
   # 
-  #     name <-
-  #       episodes_with_competition_songs %>%
-  #       arrange(show_number) %>%
-  #       filter(is.na(is_saved)) %>%
-  #       slice(1) %>%
-  #       select(airdate, episode)
+  # name <-
+  #   episodes_with_competition_songs %>%
+  #   arrange(show_number) %>%
+  #   filter(is.na(is_saved)) %>%
+  #   slice(1) %>%
+  #   select(airdate, episode)
   #     episodes_with_competition_songs[episodes_with_competition_songs$episode == name$episode,]$is_saved <- T
   # 
   #     write.csv(sapply(songs_list[[ind]], remove_wiki_citation_num) %>% as.data.frame(),
@@ -677,7 +679,6 @@ finalist_df <-
   filter(!(is.na(Birthday) & is.na(Birthplace) & is.na(Hometown)) ) %>%
   sapply(., remove_wiki_citation_num) 
 # write.csv(finalist_df, "./metadata/finalists.csv", row.names = F)
-
 
 # elimination_df
 elimination_df <- elimination_df %>%
