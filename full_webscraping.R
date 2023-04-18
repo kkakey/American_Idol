@@ -18,10 +18,10 @@ season_df <- data.frame(matrix(ncol = 11, nrow = 0))
 colnames(season_df) <- c("season", "winner", "runner_up", "original_release" , "original_network", "no_of_episodes", "hosted_by", "judges", "mentor", "finals_venue", "country_of_origin") 
 
 finalist_df <- data.frame(matrix(ncol = 6, nrow = 0))
-# colnames(finalist_df) <- c("Contestant", "Birthday", "Birthplace", "Hometown", "Description") 
 
-elimination_df <-  data.frame(matrix(ncol = 42, nrow = 0))
-colnames(elimination_df) <- c("place", "gender","contestant","top_36","top_36_2","top_36_3","top_36_4","top_32","top_32_2","top_32_3","top_32_4", "top_30",      "top_30_2",    "top_30_3" ,"top_25","top_25_2","top_25_3", "top_24","top_24_2", "top_24_3", "top_20","top_20_2", "top_16", "top_14" ,  "top_13", "top_12", "top_11","top_11_2",  "top_12", "wildcard", "comeback", "top_10" , "top_9","top_9_2","top_8","top_8_2", "top_7","top_7_2", "top_6" ,"top_6_2" ,"top_5" ,"top_5_2", "top_4", "top_4_2", "top_3", "finale" )
+elimination_df <-  data.frame(matrix(ncol = 46, nrow = 0))
+elimination_df_columns <- c("season", "place", "gender","contestant","top_36","top_36_2","top_36_3","top_36_4","top_32","top_32_2","top_32_3","top_32_4", "top_30","top_30_2","top_30_3" ,"top_25","top_25_2","top_25_3", "top_24","top_24_2", "top_24_3", "top_20","top_20_2", "top_16", "top_14" ,  "top_13", "top_12", "top_11","top_11_2", "wildcard", "comeback", "top_10" , "top_9","top_9_2","top_8","top_8_2", "top_7","top_7_2", "top_6" ,"top_6_2" ,"top_5" ,"top_5_2", "top_4", "top_4_2", "top_3", "finale" )
+colnames(elimination_df) <- elimination_df_columns
 
 # bring in cleaner functions
 fs::dir_walk("R", source)
@@ -76,7 +76,15 @@ for (season in season_nums) {
   week_desc_int_df <- data.frame(week_desc, week_order = seq(1,length(week_desc)), season = as.integer(season))
   
   week_names_df <- rbind(week_names_df, week_names_int_df)
-  week_desc_df <- rbind(week_desc_df, week_desc_int_df)
+  tryCatch(
+    expr = {
+      week_desc_df <- rbind(week_desc_df, week_desc_int_df)
+    },
+    error = function(e){ 
+      print("")
+    }
+  )
+  # week_desc_df <- rbind(week_desc_df, week_desc_int_df)
   
   
   ###### Episode Ratings ######
@@ -85,7 +93,7 @@ for (season in season_nums) {
     .[grep("ating", x=., value=F)] %>%
     html_nodes(".mw-headline") %>%
     html_attr("id")
-
+  
   tryCatch(
     expr = {
       ratings_table_df <- page %>%
@@ -108,7 +116,7 @@ for (season in season_nums) {
   ratings_table_df <- ratings_table_df %>%
     janitor::clean_names() %>%
     clean_names_rating(.)
-
+  
   if (as.integer(season != 14)) { rating_df <- merge(rating_df, ratings_table_df, all.x = TRUE, all.y= TRUE) }
   
   
@@ -127,7 +135,7 @@ for (season in season_nums) {
     janitor::clean_names(case = "title") %>%
     clean_names_audition(.) %>%
     filter(!str_detect(audition_date, 'Total Tickets to Hollywood|Total number of tickets to Hollywood'))
-
+  
   audtion_df <- merge(audtion_df, audtions_table, all.x = TRUE, all.y= TRUE)
   
   
@@ -138,18 +146,31 @@ for (season in season_nums) {
     as.data.frame() %>%
     filter(American.Idol != American.Idol.1) %>%
     rename(Col = American.Idol, Info = American.Idol.1) %>%
-    pivot_wider(names_from = Col, values_from = Info) %>%
+    pivot_wider(names_from = Col, values_from = Info) 
+  
+  if (startsWith(season_info$Judges, '.')) {
+    season_info$Judges <-
+      page %>%
+      # html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/table[1]/tbody/tr[5]/td/div') %>% 
+      html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/table[1]') %>% html_node("div.plainlist") %>%
+      html_text()
+  }
+  
+  season_info <- 
+    season_info %>%
     mutate(Season = as.integer(season),
            `Hosted by` =  gsub("([a-z])([A-Z])", "\\1; \\2", `Hosted by`),
            Judges = gsub("([a-z])([A-Z])", "\\1; \\2", Judges),
-           Judges = gsub("\n", "; ", Judges)) %>%
+           Judges = gsub("\n", "; ", trimws(Judges))) %>%
     janitor::clean_names()
   
   season_df <- merge(season_df, season_info, all.x = TRUE, all.y= TRUE)
   
-  ### THIS SECTION IS WIP ###
+  
   ###### Finalists ######
+  # this section was developed through trial and error, and with more time, could be better and more readable! 
   if (as.integer(season) < 18) {
+    finalist_id <- NULL
     finalist_id <- page %>%
       html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/*[self::h2 or self::h3]') %>%
       .[grep("Finalist|Semifinals|Top_10_[Cc]ontestants", x=., value=F)] %>%
@@ -157,31 +178,35 @@ for (season in season_nums) {
       html_attr("id") %>%
       sort()
     
-    # if (as.integer(season) == 16) {
-    if (as.integer(season) >= 6 & as.integer(season) <= 10) {
-      finalist_desc <- list()
-      for (num in seq(from = 1, to = 10)) {
-        finalist_desc <- append(finalist_desc, page %>%
-          html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::p[',num,']')) %>% html_text() )
-      }
-    }
-    else if (length(page %>%
-               html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::ul')) %>%
-               .[1] %>%
-               html_nodes("li")) == 1) {
+    if (season %in% c("6","7")) {
+      finalist_desc <- page %>% html_nodes(xpath = '//*[@id="mw-content-text"]/div[1]/table[12]') %>% html_table() %>% .[[1]] %>% pull()
+    } else if (season == "14") {
       finalist_desc <- page %>%
         html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::ul')) %>%
         html_nodes("li") %>% html_text()
-    } 
-    else {
+    } else if (as.integer(season) >= 8 & as.integer(season) <= 10) {
+      finalist_desc <- list()
+      for (num in seq(from = 1, to = 10)) {
+        finalist_desc <- append(finalist_desc, page %>%
+                                  html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::p[',num,']')) %>% html_text() )
+      }
+    }  else if (length(page %>%
+                       html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::ul')) %>%
+                       .[1] %>%
+                       html_nodes("li")) == 1) {
+      finalist_desc <- page %>%
+        html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::ul')) %>%
+        html_nodes("li") %>% html_text()
+    } else {
       finalist_desc <- page %>%
         html_nodes(xpath=paste0('//*[@id="',finalist_id,'"]/../following-sibling::ul')) %>%
         .[1] %>%
         html_nodes("li") %>% html_text()
     }
-  
-    name <- map(finalist_desc, function(x) str_split(string = x, pattern = ' \\(born |\\(')[[1]][1] %>%
+    
+    name <- map(finalist_desc, function(x) str_split(string = x, pattern = ' \\(born |\\(|\n')[[1]][1] %>%
                   str_trim(.))
+    
     birthday <- map(finalist_desc, function(x) str_split(string = x, pattern = ' \\(born |\\(')[[1]][2] %>%
                       str_extract(pattern = '^(.*?)[[:digit:]]{4}', .))
     birthplace <- map(finalist_desc, function(x) str_match(string = x, 
@@ -206,11 +231,10 @@ for (season in season_nums) {
     contestant_table <- contestant_table %>% 
       mutate(Season = as.integer(season)) 
     
-    ###### THIS IS STILL MESSY
     finalist_df <- rbind(finalist_df, contestant_table)
   }
-  ###### MIGHT NEED TO MANUALLY IMPORT DOWNLOADED DATA FOR SOME SEASONS AND DO THE CLEANING HERE
-  
+  # a better way to do this maybe would have been to manually download the data and just do the cleaning here, since
+  # the page formats vary/not stable
   
   ###### Names and Gender of Top 30 ######
   elimination_id <- page %>%
@@ -219,11 +243,12 @@ for (season in season_nums) {
     html_nodes(".mw-headline") %>%
     html_attr("id") 
   
+  elimination_table <- data.frame()
   elimination_table <- page %>%
     html_nodes(xpath=paste0('//*[@id="',elimination_id,'"]/../following-sibling::table[1]')) %>%
     html_table() %>%
     .[[1]] %>%
-    .[-c(1,2),-2] %>%
+    .[-c(1),-2] %>%
     janitor::clean_names() %>%
     select(!starts_with("x")) %>%
     clean_names_elimination(.) 
@@ -275,9 +300,10 @@ for (season in season_nums) {
     mutate(gender = ifelse(gender=="pink", "Female", "Male"))
   
   elimination_table <- elimination_table %>%
-    left_join(finalists, by = c("contestant" = "finalists_names"))
-
-  elimination_df <- merge(elimination_df, elimination_table, all.x = TRUE, all.y= FALSE)
+    left_join(finalists, by = c("contestant" = "finalists_names")) %>%
+    mutate(season = as.integer(season))
+  
+  elimination_df <- merge(elimination_df, elimination_table, all.x = TRUE, all.y= TRUE)
   
   
   ###### Songs ###### 
@@ -290,7 +316,7 @@ for (season in season_nums) {
                           html_nodes(xpath=paste0('//*[@id="',x,'"]/../following-sibling::table[1]')) %>%
                           .[1] %>%
                           html_table(fill = TRUE)
-    )
+  )
   
   ### Formatting changes slightly for some seasons
   if (length(songs_list_all)==0 | season %in% c( "9", "10", "11", "12")) {
@@ -301,7 +327,7 @@ for (season in season_nums) {
             html_nodes(xpath=paste0('//*[@id="',x,'"]/../following-sibling::table[1]')) %>%
             .[1] %>%
             html_table(fill = TRUE)
-    ) 
+      ) 
     
   }
   
@@ -322,14 +348,14 @@ for (season in season_nums) {
       ### need to grab next table in cases where it grabs the legend
       if (grepl("[Cc]ontestant", i[1,1]) & !(ncol(i)>1 && !is.na(i[1,1]))) {
         
-          not_all_na <- function(x) any(!is.na(x))
-          i <- page %>%
-            html_nodes(xpath=paste0('//*[@id="',header_ids[ind],'"]/../following-sibling::table[2]')) %>%
-            .[1] %>%
-            html_table(fill = TRUE) %>%
-            data.frame() %>%
-            select(where(not_all_na)) %>%
-            mutate(across(everything(), as.character))
+        not_all_na <- function(x) any(!is.na(x))
+        i <- page %>%
+          html_nodes(xpath=paste0('//*[@id="',header_ids[ind],'"]/../following-sibling::table[2]')) %>%
+          .[1] %>%
+          html_table(fill = TRUE) %>%
+          data.frame() %>%
+          select(where(not_all_na)) %>%
+          mutate(across(everything(), as.character))
         
       }
       
@@ -345,7 +371,7 @@ for (season in season_nums) {
         i1 <- i %>%
           select(1:"na") %>%
           select(!"na")
-
+        
         i2 <- i %>%
           select("na":ncol(.)) %>%
           select(!"na")
@@ -368,7 +394,7 @@ for (season in season_nums) {
         
         i <- i_list[[ind_loop]]
         if (ind_loop > 1 ) {
-         increase_ind <- 1 + increase_ind
+          increase_ind <- 1 + increase_ind
         }
         ### if multiple Song and Order columns, transform to standardize
         ### note: the following logic could definitely be cleaned up more. I developed it 
@@ -385,108 +411,103 @@ for (season in season_nums) {
         
         if (length(song_cols) %in% c(1,2) & length(songchoice_colname)==0) {
           
-            i <- i %>%
-              pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
-                           values_to = "Order") %>%
-              select(-name) %>%
-              pivot_longer(contains("Song"), values_to = "Song") %>%
-              group_by(Contestant) %>%
-              mutate(n = row_number(), 
-                     First.Song = ifelse(n==1,!! song_cols[1], NA),
-                     Second.Song = ifelse(n==4,!! song_cols[2], NA)
-              ) 
-            
-            if (!all(is.na(i$Second.Song))) {
-              i <- i %>%
-                filter(!(is.na(First.Song) & is.na(Second.Song)))
-            }
-            
-            i <- i %>%
-              select(- c(contains("."),"n")) %>%
-              ungroup() %>%
-              rename(Song_Theme = name)
-            
-            if (length(colnames(i))==5) {
-              i <- i %>%
-                select("Order", "Contestant", "Song", "Song_Theme","Result") %>%
-                arrange(Order)
-            }
-            if (length(colnames(i))==4) {
-              i <- i %>%
-                select("Order", "Contestant", "Song", "Result") %>%
-                arrange(Order)
-            }
+          i <- i %>%
+            pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
+                         values_to = "Order") %>%
+            select(-name) %>%
+            pivot_longer(contains("Song"), values_to = "Song") %>%
+            group_by(Contestant) %>%
+            mutate(n = row_number(), 
+                   First.Song = ifelse(n==1,!! song_cols[1], NA),
+                   Second.Song = ifelse(n==4,!! song_cols[2], NA)
+            ) 
           
-         }  
-        
-        else if (length(order_cols)>2) {
-          
-            uni_song_names <- colnames(i)[grep(pattern = order_cols, x = colnames(i)) + 1]
-            
+          if (!all(is.na(i$Second.Song))) {
             i <- i %>%
-              pivot_longer(contains("Order"), 
-                           values_to = "Order") %>%
-              select(-name) %>%
-              pivot_longer(!! uni_song_names, values_to = "Song") %>%
-              group_by(Contestant) %>%
-              mutate(n = row_number(), 
-                     First.Song = ifelse(n==1,!! uni_song_names[1], NA),
-                     Second.Song = ifelse(n==5,!! uni_song_names[2], NA),
-                     Third.Song = ifelse(n==9,!! uni_song_names[3], NA),
-              ) %>%
-              filter(!(is.na(First.Song) & is.na(Second.Song) & is.na(Third.Song))) %>%
-              select(- c(contains("."),"n")) %>%
-              ungroup() %>%
-              rename(Song_Theme = name)
-            
-            if (length(colnames(i))==5) {
-              i <- i %>%
-                select("Order", "Contestant", "Song", "Song_Theme","Result") %>%
-                arrange(Order)
-            }
-        }
-        
-        else if (num_song_cols>1 & length(firstsong_colname)!=0) {
+              filter(!(is.na(First.Song) & is.na(Second.Song)))
+          }
           
+          i <- i %>%
+            select(- c(contains("."),"n")) %>%
+            ungroup() %>%
+            rename(Song_Theme = name)
+          
+          if (length(colnames(i))==5) {
             i <- i %>%
-              pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
-                           values_to = "Order") %>%
-              select(-name) %>%
-              group_by(Contestant) %>%
-              mutate(n = 1:n(), 
-                     First.Song = ifelse(n==1,!! firstsong_colname, NA),
-                     Song = coalesce(!!! syms(colnames(.)[str_detect(colnames(.), "Song")] ))
-              ) %>% 
-              select(- c(contains("."),"n")) %>%
-              ungroup()
-            
+              select("Order", "Contestant", "Song", "Song_Theme","Result") %>%
+              arrange(Order)
+          }
+          
+          if (length(colnames(i))==4) {
             i <- i %>%
               select("Order", "Contestant", "Song", "Result") %>%
               arrange(Order)
+          }
           
-        }
-        
-        else if (num_song_cols>1 & length(songchoice_colname)!=0) {
+        } else if (length(order_cols)>2) {
           
+          uni_song_names <- colnames(i)[grep(pattern = order_cols, x = colnames(i)) + 1]
+          
+          i <- i %>%
+            pivot_longer(contains("Order"), 
+                         values_to = "Order") %>%
+            select(-name) %>%
+            pivot_longer(!! uni_song_names, values_to = "Song") %>%
+            group_by(Contestant) %>%
+            mutate(n = row_number(), 
+                   First.Song = ifelse(n==1,!! uni_song_names[1], NA),
+                   Second.Song = ifelse(n==5,!! uni_song_names[2], NA),
+                   Third.Song = ifelse(n==9,!! uni_song_names[3], NA),
+            ) %>%
+            filter(!(is.na(First.Song) & is.na(Second.Song) & is.na(Third.Song))) %>%
+            select(- c(contains("."),"n")) %>%
+            ungroup() %>%
+            rename(Song_Theme = name)
+          
+          if (length(colnames(i))==5) {
             i <- i %>%
-              pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
-                           values_to = "Order") %>%
-              select(-name) %>%
-              pivot_longer(contains("choice"), names_to = "Song_Theme", values_to = "Song") %>%
-              group_by(Contestant) %>%
-              mutate(n = 1:n()) %>% filter(n==min(n)|n==max(n)) %>%
-              select(-n)
-            
-            i <- i %>%
-              select("Order", "Contestant", "Song", "Song_Theme", "Result") %>%
+              select("Order", "Contestant", "Song", "Song_Theme","Result") %>%
               arrange(Order)
+          }
+        } else if (num_song_cols>1 & length(firstsong_colname)!=0) {
+          
+          i <- i %>%
+            pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
+                         values_to = "Order") %>%
+            select(-name) %>%
+            group_by(Contestant) %>%
+            mutate(n = 1:n(), 
+                   First.Song = ifelse(n==1,!! firstsong_colname, NA),
+                   Song = coalesce(!!! syms(colnames(.)[str_detect(colnames(.), "Song")] ))
+            ) %>% 
+            select(- c(contains("."),"n")) %>%
+            ungroup()
+          
+          i <- i %>%
+            select("Order", "Contestant", "Song", "Result") %>%
+            arrange(Order)
+          
+        } else if (num_song_cols>1 & length(songchoice_colname)!=0) {
+          
+          i <- i %>%
+            pivot_longer(contains("Order"), #-c(Contestant, contains("Song"), Result),
+                         values_to = "Order") %>%
+            select(-name) %>%
+            pivot_longer(contains("choice"), names_to = "Song_Theme", values_to = "Song") %>%
+            group_by(Contestant) %>%
+            mutate(n = 1:n()) %>% filter(n==min(n)|n==max(n)) %>%
+            select(-n)
+          
+          i <- i %>%
+            select("Order", "Contestant", "Song", "Song_Theme", "Result") %>%
+            arrange(Order)
           
         }
         
         i <- i %>%
           janitor::clean_names() %>%
           clean_names_songs()
-  
+        
         if ((ncol(i) < 10 & ncol(i) > 1) && (!("audition_city" %in% colnames(i)) | as.integer(season) %in% c(18, 19))) {
           songs_list[[ind + increase_ind]] <- i 
         }
@@ -506,7 +527,7 @@ for (season in season_nums) {
     for (x in seq_along(songs_list)) {
       if ((ind != x) && isTRUE(all_equal(songs_list[[ind]], songs_list[[x]])) ) {
         if ((! ind %in% track_ind) & (! x %in% track_ind)) {
-        track_ind <- c(track_ind, x)
+          track_ind <- c(track_ind, x)
         }
       }
     }
@@ -515,39 +536,151 @@ for (season in season_nums) {
     songs_list <- songs_list[-track_ind]
   }
   
+  
+  ############################################################
+  
+  # This section is to filter to episode week names/descriptions for episodes that include songs sung for competition by top contenders
+  # (i.e filtering out week names/descriptions for audtion, result, special episodes etc.)
+  episodes_with_competition_songs <- 
+    ratings_table_df %>%
+    filter(!(str_detect(episode, '[Rr]esult|[Aa]udition|[Hh]ollywood|Special|Best of the Rest|American Dream|Idol Gives Back|Las Vegas Round|Top 12 Revealed'))) %>%
+    head(-1) %>% # remove Finale results show 
+    mutate(extract_top_num = as.integer(str_replace_all(str_extract(episode, pattern = 'Top \\d+'), pattern = " |Top ", "")),
+           lag_num = as.integer(lag(extract_top_num)),
+           lead_num = as.integer(lead(extract_top_num)),
+           top_num = case_when(
+             extract_top_num == lag_num & lag_num > 7 ~ as.integer(extract_top_num + lag(extract_top_num, default = 0)), 
+             extract_top_num == lead_num & lead_num > 7 ~ as.integer(extract_top_num + lead(extract_top_num, default = 0)), 
+             is.na(lag_num) ~ extract_top_num,
+             T ~ extract_top_num)
+    ) %>%
+    select(!c(lag_num, lead_num)) 
+  
+  if (as.integer(season) == 13) {
+    episodes_with_competition_songs <- 
+      episodes_with_competition_songs %>%
+      tail(length(songs_list))
+  }
+  
+  week_desc_df <-
+    week_desc_df %>%
+    mutate(
+      lag_week_desc = lag(week_desc),
+      week_desc = ifelse(week_desc == lag_week_desc | str_detect(week_desc, "olor key"), NA, week_desc)
+    )
+  
+  week_names_descriptions <- 
+    week_names_df %>% 
+    left_join(., week_desc_df, by = c("season", "week_order")) %>%
+    mutate(week_name_desc = str_replace_all(str_split(week_name, pattern = '_[–-]_',  simplify = TRUE)[ , 2], pattern = "_", " "),
+           top_num = as.integer(str_replace_all(str_extract(week_name, pattern = 'Top_\\d+_'), pattern = "_|Top_", ""))
+    ) %>%
+    filter(!is.na(week_name_desc) & !is.na(top_num), season == as.integer(season)) %>%
+    select(top_num, week_name_desc, week_desc) %>%
+    group_by(top_num) %>%
+    mutate(week_name_desc = paste0(week_name_desc, collapse = " / ")) %>% distinct()
+  
+  episodes_with_competition_songs <- 
+    episodes_with_competition_songs %>%
+    left_join(., week_names_descriptions, by = "top_num") %>%
+    mutate(week_desc = coalesce(as.character(week_desc), as.character(episode)),
+           is_saved = NA) 
+  
+  ############################################################
+  
   ######################## Save Songs ########################
+  
   #### Save songs ####
-  # for (ind in seq_along(songs_list)) {
-  #   dir_path <- glue::glue('./Songs/Season_{str_pad(season, 2, pad = "0")}')
-  #   if(!dir.exists(dir_path)){
-  #     dir.create(dir_path)
+  ## where possible, I include week description as the file name
+  # if (as.integer(season) == 4) {
+  #   for (ind in seq_along(songs_list)) {
+  #     dir_path <- glue::glue('./Songs/Season_{str_pad(season, 2, pad = "0")}')
+  #     if(!dir.exists(dir_path)){
+  #       dir.create(dir_path)
+  #     }
+  # 
+  #     top_nrow <- length(unique(songs_list[[ind]]$contestant))
+  #     name <-
+  #       episodes_with_competition_songs %>%
+  #       arrange(show_number) %>%
+  #       filter(as.integer(extract_top_num) == top_nrow & is.na(is_saved)) %>%
+  #       slice(1) %>%
+  #       select(airdate, top_num, episode)
+  #     episodes_with_competition_songs[episodes_with_competition_songs$top_num == name$top_num & episodes_with_competition_songs$episode == name$episode,]$is_saved <- T
+  #     write.csv(sapply(songs_list[[ind]], remove_wiki_citation_num),
+  #               glue::glue('{dir_path}/{str_replace_all(zoo::as.Date(name$airdate, "%b %d, %Y"), "-", "")}_top_{name$top_num}_{janitor::make_clean_names(name$episode)}.csv'),
+  #               row.names = F)
+  #     }
+  # } else if (as.integer(season) < 14 & !(as.integer(season) %in% c(10, 9))
+  #          ) {
+  #   for (ind in seq_along(songs_list)) {
+  #     dir_path <- glue::glue('./Songs/Season_{str_pad(season, 2, pad = "0")}')
+  #     if(!dir.exists(dir_path)){
+  #       dir.create(dir_path)
+  #     }
+  # 
+  #     name <-
+  #       episodes_with_competition_songs %>%
+  #       arrange(show_number) %>%
+  #       filter(is.na(is_saved)) %>%
+  #       slice(1) %>%
+  #       select(airdate, episode)
+  #     episodes_with_competition_songs[episodes_with_competition_songs$episode == name$episode,]$is_saved <- T
+  # 
+  #     write.csv(sapply(songs_list[[ind]], remove_wiki_citation_num) %>% as.data.frame(),
+  #               glue::glue('{dir_path}/{str_replace_all(zoo::as.Date(name$airdate, "%b %d, %Y"), "-", "")}_{janitor::make_clean_names(name$episode)}.csv'),
+  #               row.names = F)
   #   }
-  #   write.csv(songs_list[[ind]], 
-  #             glue::glue('{dir_path}/songs_{str_pad(ind, 2, pad = "0")}.csv'), 
-  #             row.names = F)
+  # } else {
+  #   for (ind in seq_along(songs_list)) {
+  #     dir_path <- glue::glue('./Songs/Season_{str_pad(season, 2, pad = "0")}')
+  #     if(!dir.exists(dir_path)){
+  #       dir.create(dir_path)
+  #     }
+  #     write.csv(sapply(songs_list[[ind]], remove_wiki_citation_num),
+  #               glue::glue('{dir_path}/songs_{str_pad(ind, 2, pad = "0")}.csv'),
+  #               row.names = F)
+  #     }
   # }
   
-}
-
-
-######################## Save Data ########################
-
-rating_df <- rating_df %>%
+  
+  }
+  
+  ######################## Save Data ########################
+  
+# Episode ratings
+rating_df <- 
+  sapply(rating_df, remove_wiki_citation_num) %>% 
+  as.data.frame() %>%
+  mutate(show_number = as.integer(show_number)) %>%
   select(season, show_number, episode, everything()) %>%
   arrange(season, show_number)
-
-test <- rating_df %>% filter(!(str_detect(episode, '[Rr]esult|[Aa]udition|[Hh]ollywood|Special|Revealed'))
-                             , season==8) %>%
-  head(-1) # remove Finale results show
-
-week_names_df # clean to get desc of week and join to rating_df for song names
-
-### working on removing citiations ### where i am
-gsub("\\[[^[]]*\\]", "", 'Renaissance Hotel Ninth St.[3]')
-
-sapply(audtion_df, function(x) gsub("\\[[^[]]*\\]", "", x))
-audtion_df <- audtion_df %>%
+# write.csv(rating_df, "./metadata/ratings.csv", row.names = F)
+    
+# Audition information
+audtion_df <- 
+  sapply(audtion_df, remove_wiki_citation_num) %>%
+  mutate(season = as.integer(season)) %>%
+  data.frame() %>%
   arrange(season)
-season_df
-# finalist_df # needs more work
-elimination_df
+# write.csv(audtion_df, "./metadata/auditions.csv", row.names = F)
+
+# Season overview/winner
+season_df <-
+  season_df %>%
+  mutate(judges = ifelse(str_detect(judges, "^\\."), NA, judges))
+# write.csv(season_df, "./metadata/seasons.csv", row.names = F)
+
+# Information/bio on season finalists
+finalist_df <-
+  finalist_df %>%
+  filter(!(is.na(Birthday) & is.na(Birthplace) & is.na(Hometown)) ) %>%
+  sapply(., remove_wiki_citation_num) 
+# write.csv(finalist_df, "./metadata/finalists.csv", row.names = F)
+
+
+# elimination_df
+elimination_df <- elimination_df %>%
+  arrange(season, as.integer(str_split_fixed(place, "–|-", 2)[,1])) %>%
+  select(!! elimination_df_columns)
+# write.csv(elimination_df, "./metadata/elimination_chart.csv", row.names = F)

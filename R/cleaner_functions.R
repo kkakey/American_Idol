@@ -122,3 +122,8 @@ clean_names_songs <- function(df) {
   
   df 
 }
+
+
+remove_wiki_citation_num <- function(x) {
+  gsub("\\[[^[]*\\]", "", x)
+}
