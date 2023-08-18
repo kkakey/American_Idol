@@ -1,14 +1,14 @@
-"contestant_2","song_2","result_2"
-"Chelsea Sorrell","""Cowboy Casanova""","Eliminated"
-"Erika Van Pelt","""What About Love""","Wild Card"
-"Jen Hirsh","""One and Only""","Wild Card"
-"Brielle Von Hugel","""(Sittin' On) The Dock of the Bay""","Wild Card"
-"Hallie Day","""Feeling Good""","Eliminated"
-"Skylar Laine","""Stay with Me""","Advanced"
-"Baylie Brown","""Amazed""","Eliminated"
-"Hollie Cavanagh","""Reflection""","Advanced"
-"Haley Johnsen","""Sweet Dreams (Are Made of This)""","Eliminated"
-"Shannon Magrane","""Go Light Your World""","Advanced"
-"Jessica Sanchez","""Love You I Do""","Advanced"
-"Elise Testone","""One and Only""","Advanced"
-"—","—","—"
+contestant,song,result
+Chelsea Sorrell,"""Cowboy Casanova""",Eliminated
+Erika Van Pelt,"""What About Love""",Wild Card
+Jen Hirsh,"""One and Only""",Wild Card
+Brielle Von Hugel,"""(Sittin' On) The Dock of the Bay""",Wild Card
+Hallie Day,"""Feeling Good""",Eliminated
+Skylar Laine,"""Stay with Me""",Advanced
+Baylie Brown,"""Amazed""",Eliminated
+Hollie Cavanagh,"""Reflection""",Advanced
+Haley Johnsen,"""Sweet Dreams (Are Made of This)""",Eliminated
+Shannon Magrane,"""Go Light Your World""",Advanced
+Jessica Sanchez,"""Love You I Do""",Advanced
+Elise Testone,"""One and Only""",Advanced
+—,—,—

@@ -1,11 +1,11 @@
-"contestant_2","song_2","result_2"
-"Paul Jolley","""Tonight I Wanna Cry""","Advanced"
-"Johnny Keyser","""I Won't Give Up""","Eliminated"
-"JDA","""Rumour Has It""","Eliminated"
-"Kevin Harris","""(Everything I Do) I Do It for You""","Eliminated"
-"Chris Watson","""(Sittin' On) The Dock of the Bay""","Eliminated"
-"Devin Velez","""Listen""","Advanced"
-"Elijah Liu","""Talking to the Moon""","Advanced"
-"Charlie Askew","""Rocket Man""","Advanced"
-"Jimmy Smith","""Raining on Sunday""","Eliminated"
-"Curtis Finch, Jr.","""Superstar""","Advanced"
+contestant,song,result
+Paul Jolley,"""Tonight I Wanna Cry""",Advanced
+Johnny Keyser,"""I Won't Give Up""",Eliminated
+JDA,"""Rumour Has It""",Eliminated
+Kevin Harris,"""(Everything I Do) I Do It for You""",Eliminated
+Chris Watson,"""(Sittin' On) The Dock of the Bay""",Eliminated
+Devin Velez,"""Listen""",Advanced
+Elijah Liu,"""Talking to the Moon""",Advanced
+Charlie Askew,"""Rocket Man""",Advanced
+Jimmy Smith,"""Raining on Sunday""",Eliminated
+"Curtis Finch, Jr.","""Superstar""",Advanced

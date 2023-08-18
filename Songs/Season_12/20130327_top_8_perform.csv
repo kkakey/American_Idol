@@ -1,9 +1,17 @@
-"contestant","order","song","order_1","duet_partner","duet_song","result"
-"Candice Glover","1","""I Heard It Through the Grapevine""","6","Amber Holcomb and Angie Miller","""I'm Gonna Make You Love Me""","Safe"
-"Lazaro Arbos","3","""For Once in My Life""","10","Burnell Taylor and Devin Velez","""I Can't Help Myself (Sugar Pie Honey Bunch)""","Bottom three"
-"Janelle Arthur","4","""You Keep Me Hangin' On""","2","Kree Harrison","""Like a Prayer""","Safe"
-"Devin Velez","5","""The Tracks of My Tears""","10","Lazaro Arbos and Burnell Taylor","""I Can't Help Myself (Sugar Pie Honey Bunch)""","Eliminated"
-"Burnell Taylor","7","""My Cherie Amour""","10","Lazaro Arbos and Devin Velez","""I Can't Help Myself (Sugar Pie Honey Bunch)""","Bottom three"
-"Angie Miller","8","""Shop Around""","6","Candice Glover and Amber Holcomb","""I'm Gonna Make You Love Me""","Safe"
-"Amber Holcomb","9","""Lately""","6","Candice Glover and Angie Miller","""I'm Gonna Make You Love Me""","Safe"
-"Kree Harrison","11","""Don't Play That Song (You Lied)""","2","Janelle Arthur","""Like a Prayer""","Safe"
+contestant,order,song,duet_partner,duet_partner,result
+Candice Glover,1,"""I Heard It Through the Grapevine""",,Amber Holcomb and Angie Miller,Safe
+Lazaro Arbos,3,"""For Once in My Life""",,Burnell Taylor and Devin Velez,Bottom three
+Janelle Arthur,4,"""You Keep Me Hangin' On""",,Kree Harrison,Safe
+Devin Velez,5,"""The Tracks of My Tears""",,Lazaro Arbos and Burnell Taylor,Eliminated
+Burnell Taylor,7,"""My Cherie Amour""",,Lazaro Arbos and Devin Velez,Bottom three
+Angie Miller,8,"""Shop Around""",,Candice Glover and Amber Holcomb,Safe
+Amber Holcomb,9,"""Lately""",,Candice Glover and Angie Miller,Safe
+Kree Harrison,11,"""Don't Play That Song (You Lied)""",,Janelle Arthur,Safe
+Candice Glover,6,"""I'm Gonna Make You Love Me""",Amber Holcomb and Angie Miller,,Safe
+Lazaro Arbos,10,"""I Can't Help Myself (Sugar Pie Honey Bunch)""",Burnell Taylor and Devin Velez,,Bottom three
+Janelle Arthur,2,"""Like a Prayer""",Kree Harrison,,Safe
+Devin Velez,10,"""I Can't Help Myself (Sugar Pie Honey Bunch)""",Lazaro Arbos and Burnell Taylor,,Eliminated
+Burnell Taylor,10,"""I Can't Help Myself (Sugar Pie Honey Bunch)""",Lazaro Arbos and Devin Velez,,Bottom three
+Angie Miller,6,"""I'm Gonna Make You Love Me""",Candice Glover and Amber Holcomb,,Safe
+Amber Holcomb,6,"""I'm Gonna Make You Love Me""",Candice Glover and Angie Miller,,Safe
+Kree Harrison,2,"""Like a Prayer""",Janelle Arthur,,Safe

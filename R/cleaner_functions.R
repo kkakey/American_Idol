@@ -127,3 +127,80 @@ clean_names_songs <- function(df) {
 remove_wiki_citation_num <- function(x) {
   gsub("\\[[^[]*\\]", "", x)
 }
+
+
+remove_citation_num <- function(x) {
+  str_remove(x, '[0-9]{2}\\s*$')
+}
+
+
+standardize_cols <- function(filename) {
+  
+  c <- colnames(read_csv(filename))
+  
+  fix_cols <- c("song...3", "song...4", "result...4", "result...5", "song...7", "contestant_21_1", "judges_hometown", "personal_idol", "production_play", "song_original_artist")
+  if (any(unlist(fix_cols) %in% c)) {
+    return(read_csv(filename, col_names =   
+                      dplyr::case_match(c, 
+                                        c("song...3") ~ "song",
+                                        c("song_original_artist") ~ "song",
+                                        c("song...4") ~ "song_theme",
+                                        c("song...7") ~ "song_2",
+                                        c("result...5") ~ "result",
+                                        c("result...4") ~ "song_theme",
+                                        c("contestant_21_1") ~ "contestant",
+                                        c("judges_hometown") ~ "song_2",
+                                        c("personal_idol") ~ "song_theme",
+                                        c("production_play") ~ "song_theme",
+                                        .default = c
+                      )) %>% .[-1,]
+    ) 
+    
+  }
+  
+  read_csv(filename) %>% mutate_all(as.character)
+  
+}
+
+
+get_artist <- function(song) {
+  
+  artist <-
+    ifelse(stringr::str_detect(song, "\\)$"),
+           stringr::str_extract(string = song,
+                                pattern = "(?<=\\()([^()]*?)(?=\\)[^()]*$)"),
+           NA
+    )
+  
+  ifelse(stringr::str_detect(song, "\\)$") && length(strsplit(artist,' ')[[1]])>4 && !grepl("and|&|featuring", artist),
+         "FLAG",
+         artist)
+  
+}
+
+
+clean_song_title <- function(song, artist_name) {
+  
+  ifelse(is.na(artist_name), song, gsub(paste0(" \\(", artist_name, "\\)"), '', song))
+  
+}
+
+library(spotifyr)
+gen_artist_from_song <- function(song_name) {
+  
+  search_r <- search_spotify(song_name)
+  tracks <- data.frame(Reduce(rbind, search_r$tracks)) 
+  
+  # some logic to try and get the original artist
+  if (length(str_split(song_name, ' ')[[1]]) == 1) {
+    tracks <- tracks %>% filter(name == song_name)
+  } else {
+    tracks <- tracks[c(2:3),] %>% arrange(popularity) %>% arrange(album.release_date) %>% slice(1)
+  }
+  print("\n")
+  print(song_name)
+  artist <- tracks$artists[[1]]$name 
+  
+  return(stringr::str_c(cbind(artist), collapse = ","))
+  
+}

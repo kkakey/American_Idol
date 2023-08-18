@@ -1,9 +1,17 @@
-"contestant","order","song","order_1","duet_partner","duet_song","song","result"
-"Walker Burroughs","1","""Crazy Little Thing Called Love""","10","Alejandro Aranda","""Mrs. Robinson""","The Graduate","Eliminated"
-"Madison VanDenburg","2","""The Show Must Go On""","7","Jeremiah Lloyd Harmon","""A Million Dreams""","The Greatest Showman","Safe"
-"Jeremiah Lloyd Harmon","4","""Who Wants To Live Forever""","7","Madison VanDenburg","""A Million Dreams""","The Greatest Showman","Safe"
-"Alejandro Aranda","5","""Under Pressure""","10","Walker Burroughs","""Mrs. Robinson""","The Graduate","Safe"
-"Laine Hardy","8","""Fat Bottomed Girls""","3","Laci Kaye Booth","""Jackson""","Walk The Line","Safe"
-"Laci Kaye Booth","9","""Love Of My Life""","3","Laine Hardy","""Jackson""","Walk The Line","Safe"
-"Wade Cota","11","""We Are The Champions""","6","Alyssa Raghu","""Ain't No Mountain High Enough""","Guardians Of The Galaxy","Safe"
-"Alyssa Raghu","12","""Somebody To Love""","6","Wade Cota","""Ain't No Mountain High Enough""","Guardians Of The Galaxy","Eliminated"
+contestant,order,song,duet_partner,song_theme_1,result
+Walker Burroughs,1,"""Crazy Little Thing Called Love""",,The Graduate,Eliminated
+Madison VanDenburg,2,"""The Show Must Go On""",,The Greatest Showman,Safe
+Jeremiah Lloyd Harmon,4,"""Who Wants To Live Forever""",,The Greatest Showman,Safe
+Alejandro Aranda,5,"""Under Pressure""",,The Graduate,Safe
+Laine Hardy,8,"""Fat Bottomed Girls""",,Walk The Line,Safe
+Laci Kaye Booth,9,"""Love Of My Life""",,Walk The Line,Safe
+Wade Cota,11,"""We Are The Champions""",,Guardians Of The Galaxy,Safe
+Alyssa Raghu,12,"""Somebody To Love""",,Guardians Of The Galaxy,Eliminated
+Walker Burroughs,10,"""Mrs. Robinson""",Alejandro Aranda,,Eliminated
+Madison VanDenburg,7,"""A Million Dreams""",Jeremiah Lloyd Harmon,,Safe
+Jeremiah Lloyd Harmon,7,"""A Million Dreams""",Madison VanDenburg,,Safe
+Alejandro Aranda,10,"""Mrs. Robinson""",Walker Burroughs,,Safe
+Laine Hardy,3,"""Jackson""",Laci Kaye Booth,,Safe
+Laci Kaye Booth,3,"""Jackson""",Laine Hardy,,Safe
+Wade Cota,6,"""Ain't No Mountain High Enough""",Alyssa Raghu,,Safe
+Alyssa Raghu,6,"""Ain't No Mountain High Enough""",Wade Cota,,Eliminated

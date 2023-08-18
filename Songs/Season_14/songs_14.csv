@@ -1,5 +1,9 @@
-"contestant","order","judges_hometown","order_1","song","result"
-"Clark Beckham","1","""Living for the City""","5","""Your Man""","Safe"
-"Jax","2","""Empire State of Mind""","6","""Human""","Safe"
-"Nick Fradiani","3","""Bright Lights""","8","""What Hurts the Most""","Safe"
-"Rayvon Owen","4","""Need You Now""","7","""Believe""","Eliminated"
+contestant,order,song,result
+Clark Beckham,1,"""Living for the City""",Safe
+Jax,2,"""Empire State of Mind""",Safe
+Nick Fradiani,3,"""Bright Lights""",Safe
+Rayvon Owen,4,"""Need You Now""",Eliminated
+Clark Beckham,5,"""Your Man""",Safe
+Jax,6,"""Human""",Safe
+Nick Fradiani,8,"""What Hurts the Most""",Safe
+Rayvon Owen,7,"""Believe""",Eliminated

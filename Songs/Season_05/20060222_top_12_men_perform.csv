@@ -1,13 +1,13 @@
-"contestant_2","song_2","result_2"
-"Patrick Hall","""Come to My Window""(Melissa Etheridge)","Eliminated"
-"David Radford","""Crazy Little Thing Called Love""(Queen)","Safe"
-"Bucky Covington","""Simple Man""(Lynyrd Skynyrd)","Safe"
-"Will Makar","""I Want You Back""(The Jackson 5)","Safe"
-"Sway Penala","""Reasons""(Earth Wind & Fire)","Safe"
-"Chris Daughtry","""Wanted Dead or Alive""(Bon Jovi)","Safe"
-"Kevin Covais","""One Last Cry""(Brian McKnight)","Safe"
-"Gedeon McKinney","""Shout""(The Isley Brothers)","Safe"
-"Elliott Yamin","""If You Really Love Me""(Stevie Wonder)","Safe"
-"Bobby Bennet","""Copacabana""(Barry Manilow)","Eliminated"
-"Ace Young","""Father Figure"" (George Michael)","Safe"
-"Taylor Hicks","""Levon"" (Elton John)","Safe"
+contestant,song,result
+Patrick Hall,"""Come to My Window""(Melissa Etheridge)",Eliminated
+David Radford,"""Crazy Little Thing Called Love""(Queen)",Safe
+Bucky Covington,"""Simple Man""(Lynyrd Skynyrd)",Safe
+Will Makar,"""I Want You Back""(The Jackson 5)",Safe
+Sway Penala,"""Reasons""(Earth Wind & Fire)",Safe
+Chris Daughtry,"""Wanted Dead or Alive""(Bon Jovi)",Safe
+Kevin Covais,"""One Last Cry""(Brian McKnight)",Safe
+Gedeon McKinney,"""Shout""(The Isley Brothers)",Safe
+Elliott Yamin,"""If You Really Love Me""(Stevie Wonder)",Safe
+Bobby Bennet,"""Copacabana""(Barry Manilow)",Eliminated
+Ace Young,"""Father Figure"" (George Michael)",Safe
+Taylor Hicks,"""Levon"" (Elton John)",Safe
