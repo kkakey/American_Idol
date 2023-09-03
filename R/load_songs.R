@@ -20,17 +20,16 @@ songs <-
     song_theme = gsub("Original Artist", '', str_to_title(ifelse(stringr::str_detect(song_theme, "^[Ss]ong"), NA, str_squish(remove_citation_num(str_replace_all(song_theme, '\\.s\\.|\\.|^X', ' ')))))),
     artist = map_chr(song, ~get_artist(.x)),
     song = map2_chr(song, artist, ~clean_song_title(.x, .y)),
-    # artist = ifelse(is.na(artist), map_chr(song, ~gen_artist_from_song(.x)), artist)
+    # artist = ifelse(is.na(artist), map_chr(song, ~gen_artist_from_song(.x)), artist) # doesn't work as expected
   ) %>%
   select(season, week, order, contestant, song, artist, song_theme, result) 
 
+# needed to move this mutate out of the above code chunk b/c
+# it interestingly would still run `gen_artist_from_song` where artist was not NULL 
+s <- 
+  songs %>%
+  filter(is.na(artist)) %>% mutate(artist = map_chr(song, ~gen_artist_from_song(.x))) %>%
+  rbind(songs %>% filter(!is.na(artist))) %>%
+  arrange(season, week, order)
 
-
-
-songs %>%
-  ### for some reason it is getting stuck here....
-  mutate(artist = ifelse(is.na(artist), map_chr(song, ~gen_artist_from_song(.x)), artist)) 
-
-o <- songs %>%
-  filter(is.na(artist)) %>% .[38,]
-
+write_csv(s, "./Songs/songs_all.csv")

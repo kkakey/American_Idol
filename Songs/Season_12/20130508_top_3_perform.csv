@@ -1,10 +1,10 @@
-"order","contestant","song","song_theme","result"
-"1","Kree Harrison","""Fuckin' Perfect""","Mentor.s.Choice","Safe"
-"2","Candice Glover","""One""","Mentor.s.Choice","Safe"
-"3","Angie Miller","""Sorry Seems to Be the Hardest Word""","Mentor.s.Choice","Third place"
-"4","Candice Glover","""Next to Me""","Judges..Choice","Safe"
-"5","Angie Miller","""Try""","Judges..Choice","Third place"
-"6","Kree Harrison","""Here Comes Goodbye""","Judges..Choice","Safe"
-"7","Angie Miller","""Maybe""","Producers..Choice","Third place"
-"8","Kree Harrison","""Better Dig Two""","Producers..Choice","Safe"
-"9","Candice Glover","""Somewhere""","Producers..Choice","Safe"
+order,contestant,song,song_theme,result
+1,Kree Harrison,"""Fuckin' Perfect""",Mentor.s.Choice,Safe
+2,Candice Glover,"""One (U2)""",Mentor.s.Choice,Safe
+3,Angie Miller,"""Sorry Seems to Be the Hardest Word""",Mentor.s.Choice,Third place
+4,Candice Glover,"""Next to Me""",Judges..Choice,Safe
+5,Angie Miller,"""Try""",Judges..Choice,Third place
+6,Kree Harrison,"""Here Comes Goodbye""",Judges..Choice,Safe
+7,Angie Miller,"""Maybe""",Producers..Choice,Third place
+8,Kree Harrison,"""Better Dig Two""",Producers..Choice,Safe
+9,Candice Glover,"""Somewhere""",Producers..Choice,Safe
