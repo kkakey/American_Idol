@@ -1,7 +1,7 @@
-"order","contestant","song","song_theme","result"
-"1","Danny Gokey","""Dance Little Sister""","Judge.s.choice","Third place"
-"2","Kris Allen","""Apologize""","Judge.s.choice","Safe"
-"3","Adam Lambert","""One""","Judge.s.choice","Safe"
-"4","Danny Gokey","""You Are So Beautiful""","Contestant.s.choice","Third place"
-"5","Kris Allen","""Heartless""","Contestant.s.choice","Safe"
-"6","Adam Lambert","""Cryin'""","Contestant.s.choice","Safe"
+order,contestant,song,song_theme,result
+1,Danny Gokey,"""Dance Little Sister""",Judge.s.choice,Third place
+2,Kris Allen,"""Apologize""",Judge.s.choice,Safe
+3,Adam Lambert,"""One (U2)""",Judge.s.choice,Safe
+4,Danny Gokey,"""You Are So Beautiful""",Contestant.s.choice,Third place
+5,Kris Allen,"""Heartless""",Contestant.s.choice,Safe
+6,Adam Lambert,"""Cryin'""",Contestant.s.choice,Safe

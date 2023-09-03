@@ -1,13 +1,13 @@
-"order","contestant","song","song_theme","result"
-"1","Amber Holcomb","""The Power of Love""","Contestant.s.choice","Bottom two"
-"10","Angie Miller","""Cry Me a River""","One.hit.wonders","Safe"
-"2","Candice Glover","""Find Your Love""","Contestant.s.choice","Bottom two"
-"3","Kree Harrison","""It Hurt So Bad""","Contestant.s.choice","Safe"
-"4","Angie Miller","""Who You Are""","Contestant.s.choice","Safe"
-"5","Amber Holcomb","Kree Harrison","Duet.partner","Bottom two"
-"5","Kree Harrison","Amber Holcomb","Duet.partner","Safe"
-"6","Candice Glover","Angie Miller","Duet.partner","Bottom two"
-"6","Angie Miller","Candice Glover","Duet.partner","Safe"
-"7","Amber Holcomb","""MacArthur Park""","One.hit.wonders","Bottom two"
-"8","Candice Glover","""Emotion""","One.hit.wonders","Bottom two"
-"9","Kree Harrison","""A Whiter Shade of Pale""","One.hit.wonders","Safe"
+order,contestant,contestant_2,song,song_theme,result
+1,Amber Holcomb,,"""The Power of Love""",Contestant.s.choice,Bottom two
+10,Angie Miller,,"""Cry Me a River""",One.hit.wonders,Safe
+2,Candice Glover,,"""Find Your Love""",Contestant.s.choice,Bottom two
+3,Kree Harrison,,"""It Hurt So Bad""",Contestant.s.choice,Safe
+4,Angie Miller,,"""Who You Are""",Contestant.s.choice,Safe
+5,Amber Holcomb,Kree Harrison,Rumour Has It (Adele),Duet.partner,Bottom two
+5,Kree Harrison,Amber Holcomb,Rumour Has It (Adele),Duet.partner,Safe
+6,Candice Glover,Angie Miller,Stay (Rihanna),Duet.partner,Bottom two
+6,Angie Miller,Candice Glover,Stay (Rihanna),Duet.partner,Safe
+7,Amber Holcomb,,"""MacArthur Park""",One.hit.wonders,Bottom two
+8,Candice Glover,,"""Emotion""",One.hit.wonders,Bottom two
+9,Kree Harrison,,"""A Whiter Shade of Pale""",One.hit.wonders,Safe

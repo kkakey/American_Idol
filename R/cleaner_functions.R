@@ -130,7 +130,7 @@ remove_wiki_citation_num <- function(x) {
 
 
 remove_citation_num <- function(x) {
-  str_remove(x, '[0-9]{2}\\s*$')
+  stringr::str_remove(x, '[0-9]{2}\\s*$')
 }
 
 
@@ -197,8 +197,7 @@ gen_artist_from_song <- function(song_name) {
   } else {
     tracks <- tracks[c(2:3),] %>% arrange(popularity) %>% arrange(album.release_date) %>% slice(1)
   }
-  print("\n")
-  print(song_name)
+
   artist <- tracks$artists[[1]]$name 
   
   return(stringr::str_c(cbind(artist), collapse = ","))
