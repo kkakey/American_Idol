@@ -199,7 +199,6 @@ gen_artist_from_song <- function(song_name) {
   }
 
   artist <- tracks$artists[[1]]$name 
-  print(artist)
   
   return(stringr::str_c(cbind(artist), collapse = ","))
   
