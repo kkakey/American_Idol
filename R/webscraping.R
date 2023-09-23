@@ -677,7 +677,8 @@ season_df <-
 finalist_df <-
   finalist_df %>%
   filter(!(is.na(Birthday) & is.na(Birthplace) & is.na(Hometown)) ) %>%
-  sapply(., remove_wiki_citation_num) 
+  sapply(., remove_wiki_citation_num) %>%
+  janitor::clean_names()
 # write.csv(finalist_df, "./metadata/finalists.csv", row.names = F)
 
 # elimination_df
