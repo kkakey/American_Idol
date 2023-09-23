@@ -144,7 +144,7 @@ Episode ratings and views
 |show_number    |int | Episode number in season |
 |episode    |character | Episode name |
 |airdate    |date | Date episode aired |
-|18_49_rating_share    |character | Percentage of adults aged 18-49 estimated to have watched the episode (Nielsen TV ratings) |
+|18_49_rating_share    |character | Percentage of adults aged 18-49 estimated to have watched the episode (Nielsen TV ratings). Helpful [link](http://www.thefutoncritic.com/ratings.aspx?id=ratings_faq) for interpreting ratings |
 |viewers_in_millions    |character | Number (in millions) that watched the episode |
 |timeslot_et    |character | Episode timeslot in Eastern Time |
 |dvr_18_49    |character | Percentage of adults aged 18-19 estimated to have watched the episode on DVR |
