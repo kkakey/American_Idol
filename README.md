@@ -28,9 +28,9 @@ Songs that contestants sang and competed with on American Idol from seasons 1-18
 |order            |int    | Order contestants sang in |
 |contestant            |character    | Competitor name |
 |song            |character    | Name of song sung |
-|artist            |character    | name of song's artist |
+|artist            |character    | Name of song's artist (imputed if not explicitly listed) |
 |song_theme            |character    | Week theme for songs sung |
-|result            |character    | Outcome of week's competition |
+|result            |character    | Contestant's elimination status for the week |
 
 ********************************************************
 
