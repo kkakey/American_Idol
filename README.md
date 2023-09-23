@@ -10,14 +10,14 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/). Data
 
 - [`Songs/songs_all.csv`](#songs_allcsv) - songs that contestants sang and competed with on American Idol from seasons 1-18
 - [`metadata/auditions.csv`](#auditionscsv) - audition, cities, dates, and venues
-- [`metadata/elimination_chart.csv`](#elimination_chartcsv) - eliminations by week. Varies season-to-season based on season-length and number of finalists competing
+- [`metadata/elimination_chart.csv`](#elimination_chartcsv) - eliminations by week. Varies season-to-season based on season length and number of finalists competing
 - [`metadata/finalists.csv`](#finalistscsv) - information on top contestants, including birthday, hometown, and description
 - [`metadata/ratings.csv`](#ratingscsv) - episode ratings and views.
 - [`metadata/seasons.csv`](#seasonscsv) - season-level information, including season winner, runner-up, release dates, and judges
 
 ## Data Dictionary
 
-### `songs_all.csv`
+### [`songs_all.csv`](https://github.com/kkakey/American_Idol/blob/main/Songs/songs_all.csv)
 
 Songs that contestants sang and competed with on American Idol from seasons 1-18
 
@@ -34,7 +34,7 @@ Songs that contestants sang and competed with on American Idol from seasons 1-18
 
 ********************************************************
 
-### `finalists.csv`
+### [`finalists.csv`](https://github.com/kkakey/American_Idol/blob/main/metadata/finalists.csv)
 
 Information on top contestants, including birthday, hometown, and description
 
@@ -46,7 +46,7 @@ Information on top contestants, including birthday, hometown, and description
 |Description    |character | Description of contestant |
 |season    |int | Season |
 
-### `seasons.csv`
+### [`seasons.csv`](https://github.com/kkakey/American_Idol/blob/main/metadata/seasons.csv)
 
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
@@ -61,7 +61,7 @@ Information on top contestants, including birthday, hometown, and description
 |finals_venue    |character | Venue of finale |
 |mentor    |character | Name of season mentor |
 
-### `auditions.csv`
+### [`auditions.csv`](https://github.com/kkakey/American_Idol/blob/main/metadata/auditions.csv)
 
 Audition, cities, dates, and venues
 
@@ -80,9 +80,9 @@ Audition, cities, dates, and venues
 |tickets_to_hollywood         |character | Number of contestants selected from audition to go to Hollywood week |
 |guest_judge            |character | Name of guest judge at audition |
 
-### `elimination_chart.csv`
+### [`elimination_chart.csv`](https://github.com/kkakey/American_Idol/blob/main/metadata/elimination_chart.csv)
 
-Eliminations by week. Varies season-to-season based on season-length and number of finalists competing
+Eliminations by week. Varies season-to-season based on season length and number of finalists competing
 
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
@@ -134,7 +134,7 @@ Eliminations by week. Varies season-to-season based on season-length and number 
 |finale            |character    | Finale eliminations |
 
 
-### `ratings.csv`
+### [`ratings.csv`](https://github.com/kkakey/American_Idol/blob/main/metadata/ratings.csv)
 
 Episode ratings and views
 
