@@ -8,17 +8,18 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 
 ## The Datasets
 
-- `Songs/songs_all.csv` - songs that contestants sang and competed with on American Idol from seasons 1-18
-
-- `metadata/auditions.csv` - audition, cities, dates, and venues
-- `metadata/elimination_chart.csv` - eliminations by week. Varies season-to-season based on season-length and number of finalists competing
-- `metadata/finalists.csv` - information on top contestants, including birthday, hometown, and description
-- `metadata/ratings.csv` - episode ratings and views.
-- `metadata/seasons.csv` - season-level information, including season winner, runner-up, release dates, and judges
+- [`Songs/songs_all.csv`](#songs_all.csv) - songs that contestants sang and competed with on American Idol from seasons 1-18
+- [`metadata/auditions.csv`](#auditions.csv) - audition, cities, dates, and venues
+- [`metadata/elimination_chart.csv`](#elimination_chart.csv) - eliminations by week. Varies season-to-season based on season-length and number of finalists competing
+- [`metadata/finalists.csv`](#finalists.csv) - information on top contestants, including birthday, hometown, and description
+- [`metadata/ratings.csv`](#ratings.csv) - episode ratings and views.
+- [`metadata/seasons.csv`](#seasons.csv) - season-level information, including season winner, runner-up, release dates, and judges
 
 ## Data Dictionary
 
 ### `songs_all.csv`
+
+Songs that contestants sang and competed with on American Idol from seasons 1-18
 
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
@@ -35,10 +36,12 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 
 ### `finalists.csv`
 
+Information on top contestants, including birthday, hometown, and description
+
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
-|contestant    |character | Dog Breed |
-|birthday    |character | Dog Breed |
+|contestant    |character | Name of contestant |
+|birthday    |character | Contestant's birthday |
 |birthplace    |character | Contestant's city of birth |
 |Description    |character | Description of contestant |
 |season    |int | Season |
@@ -60,6 +63,8 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 
 ### `auditions.csv`
 
+Audition, cities, dates, and venues
+
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
 |audition_date_state    |date | Start date of audition |
@@ -76,6 +81,8 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 |guest_judge            |character | Name of guest judge at audition |
 
 ### `elimination_chart.csv`
+
+Eliminations by week. Varies season-to-season based on season-length and number of finalists competing
 
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
@@ -128,6 +135,8 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 
 
 ### `ratings.csv`
+
+Episode ratings and views
 
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
