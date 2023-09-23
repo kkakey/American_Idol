@@ -10,7 +10,7 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/). Data
 
 - [`Songs/songs_all.csv`](#songs_allcsv) - songs that contestants sang and competed with on American Idol from seasons 1-18
 - [`metadata/auditions.csv`](#auditionscsv) - audition, cities, dates, and venues
-- [`metadata/elimination_chart.csv`](#elimination_chartcsv) - eliminations by week. Varies season-to-season based on season length and number of finalists competing
+- [`metadata/elimination_chart.csv`](#elimination_chartcsv) - eliminations by week. Data availability varies season-to-season based on season length and number of finalists competing
 - [`metadata/finalists.csv`](#finalistscsv) - information on top contestants, including birthday, hometown, and description
 - [`metadata/ratings.csv`](#ratingscsv) - episode ratings and views.
 - [`metadata/seasons.csv`](#seasonscsv) - season-level information, including season winner, runner-up, release dates, and judges
@@ -47,6 +47,8 @@ Information on top contestants, including birthday, hometown, and description
 |season    |int | Season |
 
 ### [`seasons.csv`](https://github.com/kkakey/American_Idol/blob/main/metadata/seasons.csv)
+
+Season-level information, including season winner, runner-up, release dates, and judges
 
 |variable        |class     |description |
 |:---------------|:---------|:-----------|
