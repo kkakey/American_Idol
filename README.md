@@ -1,5 +1,5 @@
 # American Idol data
-Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
+Data in this repository comes from [Wikipedia](https://www.wikipedia.org/). Data collected on seasons 1-18 of American Idol.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/32500750/232919102-911a4ebb-700e-411e-b43e-571f7d4040cf.png" width="300" 
@@ -8,12 +8,12 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 
 ## The Datasets
 
-- [`Songs/songs_all.csv`](#songs_all.csv) - songs that contestants sang and competed with on American Idol from seasons 1-18
-- [`metadata/auditions.csv`](#auditions.csv) - audition, cities, dates, and venues
-- [`metadata/elimination_chart.csv`](#elimination_chart.csv) - eliminations by week. Varies season-to-season based on season-length and number of finalists competing
-- [`metadata/finalists.csv`](#finalists.csv) - information on top contestants, including birthday, hometown, and description
-- [`metadata/ratings.csv`](#ratings.csv) - episode ratings and views.
-- [`metadata/seasons.csv`](#seasons.csv) - season-level information, including season winner, runner-up, release dates, and judges
+- [`Songs/songs_all.csv`](#songs_allcsv) - songs that contestants sang and competed with on American Idol from seasons 1-18
+- [`metadata/auditions.csv`](#auditionscsv) - audition, cities, dates, and venues
+- [`metadata/elimination_chart.csv`](#elimination_chartcsv) - eliminations by week. Varies season-to-season based on season-length and number of finalists competing
+- [`metadata/finalists.csv`](#finalistscsv) - information on top contestants, including birthday, hometown, and description
+- [`metadata/ratings.csv`](#ratingscsv) - episode ratings and views.
+- [`metadata/seasons.csv`](#seasonscsv) - season-level information, including season winner, runner-up, release dates, and judges
 
 ## Data Dictionary
 
