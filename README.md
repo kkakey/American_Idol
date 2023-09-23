@@ -31,6 +31,33 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 |song_theme            |character    | Week theme for songs sung |
 |result            |character    | Outcome of week's competition |
 
+********************************************************
+
+### `finalists.csv`
+
+|variable        |class     |description |
+|:---------------|:---------|:-----------|
+|contestant    |character | Dog Breed |
+|birthday    |character | Dog Breed |
+|birthplace    |character | Contestant's city of birth |
+|Description    |character | Description of contestant |
+|season    |int | Season |
+
+### `seasons.csv`
+
+|variable        |class     |description |
+|:---------------|:---------|:-----------|
+|season    |int | Season |
+|winner    |character | Name of winner |
+|runner_up    |character | Name of runner-up |
+|original_release    |character | Original air dates |
+|original_network    |character | Network aired on |
+|hosted_by    |character | Host's name |
+|judges    |character | Name of judges |
+|no_of_episodes    |int | Episode name |
+|finals_venue    |character | Venue of finale |
+|mentor    |character | Name of season mentor |
+
 ### `auditions.csv`
 
 |variable        |class     |description |
@@ -99,16 +126,6 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 |top_3            |character    | Top 3 eliminations |
 |finale            |character    | Finale eliminations |
 
-### `finalists.csv`
-
-|variable        |class     |description |
-|:---------------|:---------|:-----------|
-|contestant    |character | Dog Breed |
-|birthday    |character | Dog Breed |
-|birthplace    |character | Contestant's city of birth |
-|Description    |character | Description of contestant |
-|season    |int | Season |
-
 
 ### `ratings.csv`
 
@@ -125,22 +142,6 @@ Data in this repository comes from [Wikipedia](https://www.wikipedia.org/).
 |dvr_viewers_millions    |character | Number (in millions) that watched the episode on DVR |
 |total_18_49    |character | Total percentage of adults aged 18-49 estimated to have watched the episode |
 |weekrank    |character | Ranking of episode performance by season |
-
-
-### `seasons.csv`
-
-|variable        |class     |description |
-|:---------------|:---------|:-----------|
-|season    |int | Season |
-|winner    |character | Name of winner |
-|runner_up    |character | Name of runner-up |
-|original_release    |character | Original air dates |
-|original_network    |character | Network aired on |
-|hosted_by    |character | Host's name |
-|judges    |character | Name of judges |
-|no_of_episodes    |int | Episode name |
-|finals_venue    |character | Venue of finale |
-|mentor    |character | Name of season mentor |
 
 
 ********************************************************
